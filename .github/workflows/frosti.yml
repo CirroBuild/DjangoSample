@@ -97,38 +97,38 @@ jobs:
     if: ${{ 'django' == 'django' }}
     needs: [InfraProvision]
     steps:
-      - uses: actions/checkout@v3
-      
-      - name: Set up Homebrew
-          id: set-up-homebrew
-          uses: Homebrew/actions/setup-homebrew@master
-        
-      - name: Setup Python
-          uses: actions/setup-python@v1
-          with:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python version
+        uses: actions/setup-python@v2
+        with:
           python-version: 3.8
+
+      - name: Create and start virtual environment
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
          
-      - name: python install
-          working-directory: .
-          run: |
-          brew install python
-          pip3 install -r requirements.txt
-         
-      - uses: azure/login@v1
-          with:
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Log in to Azure CLI
+        uses: azure/login@v1
+        with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-         
-      - uses: azure/appservice-settings@v1
-          with:
+          
+      - name: Static collection and set migration command on App Service
+        uses: Azure/appservice-settings@v1
+        with:  
           app-name: ${{ needs.infraProvision.outputs.WEB_APP_NAME }}
-          mask-inputs: false
+          app-settings-json: '[{ "name": "POST_BUILD_COMMAND",  "value": "python manage.py collectstatic && python manage.py makemigrations && python manage.py migrate" }, { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true" }, { "name": "DJANGO_ENV", "value": "production"}]'
           general-settings-json: '{"linuxFxVersion": "PYTHON|3.8"}' #'General configuration settings as Key Value pairs'
       
-      - uses: azure/webapps-deploy@v2
-          with:
+      - name: Deploy to App Service
+        uses: azure/webapps-deploy@v2
+        with:
           app-name: ${{ needs.infraProvision.outputs.WEB_APP_NAME }}
-          package: .
       
       - name: logout
-          run: |
+        run: |
           az logout
