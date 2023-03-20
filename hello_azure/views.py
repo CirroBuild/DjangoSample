@@ -1,22 +1,38 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from .models import Sample
+from .forms import SampleForm
 
 def index(request):
-    print('Request for index page received')
-    return render(request, 'hello_azure/index.html')
+    samples_list = Sample.objects.order_by('-sample_date')[:5]
+    context = {
+        'samples_list': samples_list,
+    }
+    return render(request, 'hello_azure/index.html', context)
 
-@csrf_exempt
-def hello(request):
+
+def results(request, sample_id):
+    try:
+        sample = Sample.objects.get(pk=sample_id)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(request, 'hello_azure/results.html', {'sample': sample})
+
+
+
+def sample(request):
+    # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        name = request.POST.get('name')
-        
-        if name is None or name == '':
-            print("Request for hello page received with no name or blank name -- redirecting")
-            return redirect('index')
-        else:
-            print("Request for hello page received with name=%s" % name)
-            context = {'name': name }
-            return render(request, 'hello_azure/hello.html', context)
+        # create a form instance and populate it with data from the request:
+        form = SampleForm(request.POST, request.FILES)
+        # check whether it's valid:
+        if form.is_valid():
+            form.save()
+            # redirect to a new URL:
+            return HttpResponseRedirect('/')
+
+    # if a GET (or any other method) we'll create a blank form
     else:
-        return redirect('index')
+        form = SampleForm()
+
+    return render(request, 'hello_azure/sample.html', {'form': form})

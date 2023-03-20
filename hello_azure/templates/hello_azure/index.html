@@ -1,32 +1,54 @@
-{% load static %}
-<!doctype html>
-<head>
-    <title>Hello Azure - Python Quickstart</title>
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-    <link rel="icon"href="{% static 'favicon.ico' %}">
-</head>
-<html>
-   <body>
-     <main>
-        <div class="px-4 py-3 my-2 text-center">
-            <img class="d-block mx-auto mb-4" src="{% static 'images/azure-icon.svg' %}" alt="Azure Logo" width="192" height="192"/>
-            <!-- <img  src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
-            <h1 class="display-6 fw-bold text-primary">Welcome to Azure</h1>            
-          </div>
-        <form method="post" action="hello">
-            {% csrf_token %}
-            <div class="col-md-6 mx-auto text-center">
-                <label for="name" class="form-label fw-bold fs-5">Please tell me your name?</label>
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 
-                <!-- <p class="lead mb-2">Could you please tell me your name?</p> -->
-                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center align-items-center my-1">
-                    <input type="text" class="form-control" id="name" name="name" style="max-width: 256px;">
-                  </div>            
-                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center my-2">
-                  <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Say Hello</button>
-                </div>            
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Samples</title>
+  </head>
+  <body>
+    <div class="container">
+        <nav class="navbar bg-dark" data-bs-theme="dark">
+            <div class="container-fluid">
+                <ul class="nav nav-pills">
+                    <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="#">Equine Lung Experts</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/sample">Add New Sample</a>
+                    </li>
+                </ul>       
             </div>
-        </form>
-     </main>      
-   </body>
+        </nav>
+        
+        {% if samples_list %}
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Date Submitted</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for sample in samples_list %}
+              <tr>
+                <td><a href="/{{ sample.id }}/results">{{ sample.patient_name }}</a></td>
+                <td>{{ sample.sample_date }}</td>
+              </tr>
+            {% endfor %}    
+            </tbody>
+          </table>
+        {% else %}
+            <h1>No samples are available.</h1>
+        {% endif %}
+    </div>
+
+  </body>
 </html>
+
+
+
+
