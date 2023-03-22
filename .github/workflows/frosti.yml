@@ -124,10 +124,6 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Make migrations and run migrations
-        run: |
-          python manage.py migrate
               
       - name: Static collection and set migration command on App Service
         uses: Azure/appservice-settings@v1
