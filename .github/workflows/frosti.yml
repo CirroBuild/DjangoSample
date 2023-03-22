@@ -131,8 +131,8 @@ jobs:
         uses: Azure/appservice-settings@v1
         with:  
           app-name: ${{ needs.infraProvision.outputs.WEB_APP_NAME }}
-          app-settings-json: '[{ "name": "PRE_BUILD_COMMAND",  "value": "python manage.py migrate" }, { "name": "DEBUG",  "value": "0" }, { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true" }, { "name": "DJANGO_ENV", "value": "production"}]'
-          general-settings-json: '{"linuxFxVersion": "PYTHON|3.8"}' #'General configuration settings as Key Value pairs'
+          app-settings-json: '[{ "name": "DEBUG",  "value": "0" }, { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "true" }, { "name": "DJANGO_ENV", "value": "production"}]'
+          general-settings-json: '[{"linuxFxVersion": "PYTHON|3.8"}, {"startupFile": "python manage.py migrate"}]' #'General configuration settings as Key Value pairs'
       
       - name: Deploy to App Service
         uses: azure/webapps-deploy@v2
