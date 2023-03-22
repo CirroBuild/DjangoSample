@@ -80,7 +80,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'quickstartproject.wsgi.application'
-
+CSRF_TRUSTED_ORIGINS = ['https://*.djangosamp-ppe-eus-webapp32218b2.azurewebsites.net']
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
