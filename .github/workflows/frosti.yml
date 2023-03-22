@@ -96,6 +96,8 @@ jobs:
     runs-on: macos-latest
     if: ${{ 'django' == 'django' }}
     needs: [InfraProvision]
+    env:
+      KV_ENDPOINT: https://djangosamp-ppe-eus-kv322.vault.azure.net/
     steps:
       - uses: actions/checkout@v2
 
