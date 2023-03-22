@@ -16,7 +16,7 @@ from azure.keyvault.secrets import SecretClient
 from azure.identity import DefaultAzureCredential
 
 from decouple import config
-kvEndpoint = config("KV_ENDPOINT")
+kvEndpoint = 'https://djangosamp-ppe-eus-kv322.vault.azure.net/'
 
 credential = DefaultAzureCredential(exclude_shared_token_cache_credential=True)
 client = SecretClient(vault_url=kvEndpoint, credential=credential)
